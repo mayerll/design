@@ -1,0 +1,14 @@
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <h2>Please input a key </h2>
+    File Name : <input class="" name="key" type="text">
+    <input type="submit" value="Submit">
+</form>
+
+<h2>Result: </h2>
+<table>
+<tr>
+	<td>{{ key }}</td>
+</tr>
+</table>

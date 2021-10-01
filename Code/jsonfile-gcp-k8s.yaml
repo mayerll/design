@@ -1,0 +1,48 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: jsonfileanagrams
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: jsonfile
+  replicas: 3 
+  template: 
+    metadata:
+      labels:
+        app: jsonfile
+    spec:
+      containers:
+      - name: jsonfile
+        image: jsonfile
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+          - name: secret-volume
+            mountPath: /etc/secret-volume
+       volumes:
+         - name: secret-volume
+           secret:
+             secretName: test-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jsonfileanagrams
+  namespace: default
+  labels:
+    app: jsonfile
+  annotations:
+    cloud.google.com/load-balancer-type: "Internal"
+spec:
+  externalTrafficPolicy: Local
+  ports:
+  - name: http
+    port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: jsonfile
+  type: LoadBalancer
